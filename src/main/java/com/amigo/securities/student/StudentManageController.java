@@ -1,5 +1,6 @@
 package com.amigo.securities.student;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -15,22 +16,26 @@ public class StudentManageController {
     );
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'ADMINTRAINEE')")
     public List<Student> getAllStudents() {
         System.out.println("Get All Students");
         return students;
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('student:write')")
     public void registerNewStudent(@RequestBody Student student) {
         System.out.println("registerNewStudent " + student);
     }
 
     @DeleteMapping(path = "{studentId}")
+    @PreAuthorize("hasAuthority('student:write')")
     public void deleteStudent(@PathVariable("studentId") Integer studentId) {
         System.out.println("deleteStudent id " + studentId);
     }
 
     @PutMapping(path = "{studentId}")
+    @PreAuthorize("hasAuthority('student:write')")
     public void updateStudent(@PathVariable("studentId") Integer studentId, @RequestBody Student student) {
         System.out.printf("%s %s%n", studentId, student);
     }

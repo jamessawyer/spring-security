@@ -42,11 +42,17 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected UserDetailsService userDetailsService() {
         UserDetails kobeBryant = User.builder()
                 .username("kobebryant")
-                .password(passwordEncoder.encode("password"))
-                .roles("STUDENT") // spring 会将roles转换成 ROLE_STUDENT
+                .password(passwordEncoder.encode("password123"))
+                .roles(ApplicationUserRole.STUDENT.name()) // spring 会将roles转换成 ROLE_STUDENT
                 .build();
 
-        return new InMemoryUserDetailsManager(kobeBryant);
+        UserDetails lindaUser = User.builder()
+                .username("linda")
+                .password(passwordEncoder.encode("password123"))
+                .roles(ApplicationUserRole.ADMIN.name())
+                .build();
+
+        return new InMemoryUserDetailsManager(kobeBryant, lindaUser);
 
     }
 }

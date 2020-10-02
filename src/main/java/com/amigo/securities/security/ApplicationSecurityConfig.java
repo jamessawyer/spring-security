@@ -29,7 +29,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*")
-                .permitAll()
+                    .permitAll()
+                // 使用接口 + 角色 对请求进行匹配
+                .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name()) // roles based authentication
             .anyRequest()
             .authenticated()
             .and()
@@ -40,8 +42,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     @Bean // 用于SpringBoot帮助我们自动注入
     protected UserDetailsService userDetailsService() {
-        UserDetails kobeBryant = User.builder()
-                .username("kobebryant")
+        UserDetails kobeUser = User.builder()
+                .username("kobe")
                 .password(passwordEncoder.encode("password123"))
                 .roles(ApplicationUserRole.STUDENT.name()) // spring 会将roles转换成 ROLE_STUDENT
                 .build();
@@ -52,7 +54,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles(ApplicationUserRole.ADMIN.name())
                 .build();
 
-        return new InMemoryUserDetailsManager(kobeBryant, lindaUser);
+        return new InMemoryUserDetailsManager(kobeUser, lindaUser);
 
     }
 }

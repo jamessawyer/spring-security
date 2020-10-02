@@ -13,6 +13,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         // 表示 任何请求都需要验证 并且 使用 basic auth
         http
             .authorizeRequests()
+                .antMatchers("/", "index", "/css/*", "/js/*")
+                .permitAll()
             .anyRequest()
             .authenticated()
             .and()

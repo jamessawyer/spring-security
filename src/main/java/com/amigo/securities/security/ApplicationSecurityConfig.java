@@ -1,6 +1,7 @@
 package com.amigo.securities.security;
 
 import com.amigo.securities.auth.ApplicationUserService;
+import com.amigo.securities.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -30,36 +32,48 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 表示 任何请求都需要验证 并且 使用 basic auth
         http
-            .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/", "index", "/css/*", "/js/*")
-                    .permitAll()
-                // 使用接口 + 角色 对请求进行匹配
-                .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name()) // roles based authentication
-            .anyRequest()
-            .authenticated()
-            .and()
-            .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .defaultSuccessUrl("/courses", true)
-                .passwordParameter("password") // 自定义password name 参考 login.html 表单控件的name属性
-                .usernameParameter("username")
-            .and()
-            .rememberMe()
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-                .key("your_custom_secret_key_for_md5_hash")
-                .rememberMeParameter("remember-me")
-            .and()
-            .logout()
-                .logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+                .csrf().disable()
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 设置为无状态 表示服务端不用存储session
+                .and()
+                    // authenticationManager 来自 WebSecurityConfigurerAdapter
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
+                .authorizeRequests()
+                .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
+                .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
+                .anyRequest()
+                .authenticated();
+        // 表单验证
+//        http
+//            .csrf().disable()
+//            .authorizeRequests()
+//                .antMatchers("/", "index", "/css/*", "/js/*")
+//                    .permitAll()
+//                // 使用接口 + 角色 对请求进行匹配
+//                .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name()) // roles based authentication
+//            .anyRequest()
+//            .authenticated()
+//            .and()
+//            .formLogin()
+//                .loginPage("/login")
+//                .permitAll()
+//                .defaultSuccessUrl("/courses", true)
+//                .passwordParameter("password") // 自定义password name 参考 login.html 表单控件的name属性
+//                .usernameParameter("username")
+//            .and()
+//            .rememberMe()
+//                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+//                .key("your_custom_secret_key_for_md5_hash")
+//                .rememberMeParameter("remember-me")
+//            .and()
+//            .logout()
+//                .logoutUrl("/logout")
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+//                .clearAuthentication(true)
+//                .invalidateHttpSession(true)
+//                .deleteCookies("JSESSIONID", "remember-me")
+//                .logoutSuccessUrl("/login");
     }
 
     // 用于从数据库中获取用户

@@ -1,6 +1,7 @@
 package com.amigo.securities.security;
 
 import com.amigo.securities.auth.ApplicationUserService;
+import com.amigo.securities.jwt.JwtTokenVerifier;
 import com.amigo.securities.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     // authenticationManager 来自 WebSecurityConfigurerAdapter
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
+                    // 添加到JwtUsernameAndPasswordAuthenticationFilter之后
+                .addFilterAfter(new JwtTokenVerifier(), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())

@@ -57,7 +57,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             Authentication authResult
     ) throws IOException, ServletException {
         // 什么key都可以 确保安全 不要泄漏
-        String key = "whatever---you***want***just***be**security";
+        String secretKey = "whatever---you***want***just***be**security";
 
         String token = Jwts.builder()
                 // 下面都是添加到JWT payload 中的信息
@@ -65,7 +65,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .claim("authorities", authResult.getAuthorities()) // 添加权限信息
                 .setIssuedAt(new Date()) // 签发时间
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2))) // 设置过期时间为2个星期
-                .signWith(Keys.hmacShaKeyFor(key.getBytes())) // 加密 key
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes())) // 加密 key
                 .compact();
 
         // 将生成的token 发送给客户端

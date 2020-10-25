@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -42,7 +45,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
                 .loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/courses", true);
+                .defaultSuccessUrl("/courses", true)
+                .and()
+                .rememberMe()
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                    .key("your_custom_secret_key_for_md5_hash");
     }
 
     // 用于从数据库中获取用户
@@ -51,21 +58,21 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected UserDetailsService userDetailsService() {
         UserDetails kobeUser = User.builder()
                 .username("kobe")
-                .password(passwordEncoder.encode("password123"))
+                .password(passwordEncoder.encode("123"))
 //                .roles(ApplicationUserRole.STUDENT.name()) // spring 会将roles转换成 ROLE_STUDENT
                 .authorities(ApplicationUserRole.STUDENT.getGrantedAuthorities())
                 .build();
 
         UserDetails lindaUser = User.builder()
                 .username("linda")
-                .password(passwordEncoder.encode("password123"))
+                .password(passwordEncoder.encode("123"))
 //                .roles(ApplicationUserRole.ADMIN.name()) // ROLE_ADMIN
                 .authorities(ApplicationUserRole.ADMIN.getGrantedAuthorities())
                 .build();
 
         UserDetails tomUser = User.builder()
                 .username("tom")
-                .password(passwordEncoder.encode("password123"))
+                .password(passwordEncoder.encode("123"))
 //                .roles(ApplicationUserRole.ADMINTRAINEE.name()) // ROLE_ADMINTRAINEE
                 .authorities(ApplicationUserRole.ADMINTRAINEE.getGrantedAuthorities())
                 .build();

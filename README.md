@@ -1435,11 +1435,15 @@ java中jwt的实现有好几个库，用的比较多的就是 [jjwt](https://git
 </dependency>
 ```
 
+整个验证的内部逻辑图：![auth_flow](imgs/auth_flow.jpg)
+
 
 
 ### 6.2 验证用户名和密码 Fileter
 
 这一步表示服务端接收用户信息，然后服务端进行验证。
+
+![auth_filter_chain](imgs/auth_filter_chain.jpg)
 
 创建一个 `JwtUsernameAndPasswordAuthenticationFilter` 类，继承 `UsernamePasswordAuthenticationFilter`, 复写 `attemptAuthentication`方法，表示尝试验证
 

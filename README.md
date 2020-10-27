@@ -197,7 +197,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
 > 1.密码编码
 
-新建 **`security/PasswordConfig.java`**文件
+新建 **`security/PasswordConfig.java`** 文件
 
 ```java
 @Configuration
@@ -349,7 +349,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
 ### 3.1 基于Role的接口验证(Roles based authentication)
 
-假设我们有一个接口是 **`/api/v1/students/{studentId}`**, 我们只允许上面定义的 **`kobe`** user访问，而 **`linda`** user 是无法访问的，则我们可以使用 **`antMatchers() + hasRole()`**的方式进行匹配：
+假设我们有一个接口是 **`/api/v1/students/{studentId}`**, 我们只允许上面定义的 **`kobe`** user访问，而 **`linda`** user 是无法访问的，则我们可以使用 **`antMatchers() + hasRole() `** 的方式进行匹配：
 
 ```java
 @Override
@@ -489,7 +489,7 @@ protected void configure(HttpSecurity http) throws Exception {
 }
 ```
 
-目前为止，**`linda & tom`** user 对**`/management/api/v1/students`** 是都可以访问的。
+目前为止，**`linda & tom`** user 对 **`/management/api/v1/students`** 是都可以访问的。
 
 先使用 **`antMatchers().hasAuthority()`** 对不同的资源添加不同的权限要求：
 
@@ -540,7 +540,7 @@ public User.UserBuilder roles(String... roles) {
 }
 ```
 
-其本质就是将不同的 **`ROLE`** 添加到 **`authorities`** 集合中，因此我们也可以将 **`ApplicationUserRole`**中的 **`permissions`** 添加到一个自定义的集合中, 下面使用 **`GrantedAuthority`**接口的 **`SimpleGrantedAuthority`** 实现：
+其本质就是将不同的 **`ROLE`** 添加到 **`authorities`** 集合中，因此我们也可以将 **`ApplicationUserRole `** 中的 **`permissions`** 添加到一个自定义的集合中, 下面使用 **`GrantedAuthority `** 接口的 **`SimpleGrantedAuthority`** 实现：
 
 ```java
 // com.amigo.securities.security.ApplicationUserRole
@@ -693,7 +693,7 @@ public class StudentManageController {
 }
 ```
 
-**`@PreAuthority`** 和 **`antMatchers()`**一样，可以使用  **`hasRole() | hasAuthority() |hasAnyRole() | hasAnyAuthority()  `** 进行模式匹配。
+**`@PreAuthority`** 和 **`antMatchers() `** 一样，可以使用  **`hasRole() | hasAuthority() |hasAnyRole() | hasAnyAuthority()  `** 进行模式匹配。
 
 另外还需要在 **`ApplicationSecurityConfig`** 中将 **`@EnableGlobalMethodSecurity()`** 开启
 
@@ -726,7 +726,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-去掉 **`antMatchers`**部分， 这样就和上面的一模一样了。
+去掉 **`antMatchers`** 部分， 这样就和上面的一模一样了。
 
 
 
@@ -761,7 +761,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
 ### 4.1 表单验证使用方法
 
-将上面的 **`httpBasic()`** 换成 **`formLogin()`**即可：
+将上面的 **`httpBasic()`** 换成 **`formLogin()`** 即可：
 
 ```java
 // com.amigo.securities.security.ApplicationSecurityConfig
@@ -782,7 +782,7 @@ protected void configure(HttpSecurity http) throws Exception {
 
 默认sprintboot会提供一个登录界面，如果想自定义，可以按照以下步骤：
 
-1. 添加 **`spring-boot-starter-thymeleaf`**依赖，java html模版引擎
+1. 添加 **`spring-boot-starter-thymeleaf`** 依赖，java html模版引擎
 
    ```xml
    <dependency>
